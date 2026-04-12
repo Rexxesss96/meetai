@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { OctagonAlertIcon } from "lucide-react";
@@ -65,7 +65,9 @@ export const SignInView = () => {
     );
   };
 
-  const onSocial = (provider: "github" | "google") => {
+  const onSocial = (provider: "github" | "google", e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setError(null);
     setPending(true);
 
@@ -164,7 +166,7 @@ export const SignInView = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <Button
                     disabled={pending}
-                    onClick={() => onSocial("google")}
+                    onClick={(e) => onSocial("google", e)}
                     variant="outline"
                     type="button"
                     className="w-full"
@@ -174,7 +176,7 @@ export const SignInView = () => {
 
                   <Button
                     disabled={pending}
-                    onClick={() => onSocial("github")}
+                    onClick={(e) => onSocial("github", e)}
                     variant="outline"
                     type="button"
                     className="w-full"
@@ -197,7 +199,7 @@ export const SignInView = () => {
           </Form>
 
           <div
-            className="bg-radial from-green-700 to-green-900 
+            className="bg-radial from-sidebar-accent to-sidebar 
             relative hidden md:flex flex-col 
             gap-y-4 items-center justify-center"
           >
