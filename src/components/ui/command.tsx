@@ -4,6 +4,7 @@ import * as React from "react";
 import { Command as CommandPrimitive } from "cmdk";
 
 import { cn } from "@/lib/utils";
+
 import {
   Dialog,
   DialogContent,
@@ -11,8 +12,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
+
 import { InputGroup, InputGroupAddon } from "@/components/ui/input-group";
-import { SearchIcon, CheckIcon } from "lucide-react";
+
+import { useIsMobile } from "@/hooks/use-mobile";
+
+import { CheckIcon, SearchIcon } from "lucide-react";
 
 function Command({
   className,
@@ -30,6 +43,17 @@ function Command({
   );
 }
 
+type ResponsiveDialogProps = {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  title?: string;
+  description?: string;
+  className?: string;
+  showCloseButton?: boolean;
+  children: React.ReactNode;
+};
+
 function CommandDialog({
   title = "Command Palette",
   description = "Search for a command to run...",
@@ -37,19 +61,65 @@ function CommandDialog({
   className,
   showCloseButton = false,
   ...props
-}: Omit<React.ComponentProps<typeof Dialog>, "children"> & {
-  title?: string;
-  description?: string;
-  className?: string;
-  showCloseButton?: boolean;
-  children: React.ReactNode;
-}) {
+}: ResponsiveDialogProps) {
   return (
     <Dialog {...props}>
       <DialogHeader className="sr-only">
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
+
+      <DialogContent
+        className={cn(
+          "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
+          className,
+        )}
+        showCloseButton={showCloseButton}
+      >
+        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+          {children}
+        </Command>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function CommandResponsiveDialog({
+  title = "Command Palette",
+  description = "Search for a command to run...",
+  children,
+  className,
+  showCloseButton = false,
+  ...props
+}: ResponsiveDialogProps) {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <Drawer {...props}>
+        <DrawerContent
+          className={cn("overflow-hidden rounded-t-xl p-0", className)}
+        >
+          <DrawerHeader className="sr-only">
+            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerDescription>{description}</DrawerDescription>
+          </DrawerHeader>
+
+          <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+            {children}
+          </Command>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return (
+    <Dialog {...props}>
+      <DialogHeader className="sr-only">
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
+
       <DialogContent
         className={cn(
           "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
@@ -80,6 +150,7 @@ function CommandInput({
           )}
           {...props}
         />
+
         <InputGroupAddon>
           <SearchIcon className="size-4 shrink-0 opacity-50" />
         </InputGroupAddon>
@@ -161,6 +232,7 @@ function CommandItem({
       {...props}
     >
       {children}
+
       <CheckIcon className="ml-auto opacity-0 group-has-data-[slot=command-shortcut]/command-item:hidden group-data-[checked=true]/command-item:opacity-100" />
     </CommandPrimitive.Item>
   );
@@ -185,6 +257,7 @@ function CommandShortcut({
 export {
   Command,
   CommandDialog,
+  CommandResponsiveDialog,
   CommandInput,
   CommandList,
   CommandEmpty,
