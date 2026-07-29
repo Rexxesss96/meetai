@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TRPCReactProvider } from "@/trpc/client";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
           className={`${inter.className} antialiased`}
           suppressHydrationWarning
         >
+          <Toaster />
           <TooltipProvider>{children}</TooltipProvider>
         </body>
       </html>
