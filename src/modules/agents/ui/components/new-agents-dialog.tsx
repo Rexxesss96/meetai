@@ -9,7 +9,7 @@ interface NewAgentDialogProps {
 export const NewAgentDialog = ({ open, onOpenChange }: NewAgentDialogProps) => {
   return (
     <ResponsiveDialog
-      title="New Agents"
+      title="New Agent"
       description="Create a new Agent"
       open={open}
       onOpenChange={onOpenChange}
